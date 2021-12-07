@@ -35,7 +35,7 @@ namespace KillBroadcasts
         /// Gets or sets the broadcast to send when a player commits suicide.
         /// </summary>
         [Description("The broadcast to send when a player commits suicide.")]
-        public Broadcast SuicideBroadcast { get; set; } = new Broadcast("$KilledPlayer committed suicide.");
+        public Broadcast SuicideBroadcast { get; set; } = new Broadcast("$KilledName committed suicide.");
 
         /// <summary>
         /// Gets or sets a collection of roles and the names that correlate with them.

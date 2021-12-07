@@ -9,6 +9,7 @@ namespace KillBroadcasts
 {
     using Exiled.API.Features;
     using Exiled.Events.EventArgs;
+    using MEC;
 
     /// <summary>
     /// Handles events derived from <see cref="Exiled.Events.Handlers"/>.
@@ -28,8 +29,12 @@ namespace KillBroadcasts
         {
             Broadcast broadcast = GetRelatedBroadcast(ev);
             broadcast = FormatBroadcast(broadcast, ev);
-            foreach (Player player in Player.Get(RoleType.Spectator))
-                player.Broadcast(broadcast);
+
+            Timing.CallDelayed(0.1f, () =>
+            {
+                foreach (Player player in Player.Get(RoleType.Spectator))
+                    player.Broadcast(broadcast);
+            });
         }
 
         private Broadcast GetRelatedBroadcast(DyingEventArgs ev)
@@ -47,15 +52,15 @@ namespace KillBroadcasts
         {
             string content = broadcast.Content.Replace("$DamageType", ev.Handler.Type.Translation())
                 .Replace("$KilledName", ev.Target.Nickname)
-                .Replace("$KilledRole", ev.Target.Role.Translation())
                 .Replace("$KilledRoleColor", ev.Target.RoleColor.ToHex())
+                .Replace("$KilledRole", ev.Target.Role.Translation())
                 .Replace("$KilledUserId", ev.Target.UserId);
 
             if (ev.Killer != null)
             {
                 content = content.Replace("$KillersName", ev.Killer.Nickname)
-                    .Replace("$KillersRole", ev.Killer.Role.Translation())
                     .Replace("$KillersRoleColor", ev.Killer.RoleColor.ToHex())
+                    .Replace("$KillersRole", ev.Killer.Role.Translation())
                     .Replace("$KillersUserId", ev.Killer.UserId);
             }
 

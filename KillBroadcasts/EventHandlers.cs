@@ -28,12 +28,12 @@ namespace KillBroadcasts
         public void OnDying(DyingEventArgs ev)
         {
             Broadcast broadcast = GetRelatedBroadcast(ev);
-            broadcast = FormatBroadcast(broadcast, ev);
+            string content = FormatContent(broadcast.Content, ev);
 
             Timing.CallDelayed(0.1f, () =>
             {
                 foreach (Player player in Player.Get(RoleType.Spectator))
-                    player.Broadcast(broadcast);
+                    player.Broadcast(broadcast.Duration, content, broadcast.Type, broadcast.Show);
             });
         }
 
@@ -48,23 +48,23 @@ namespace KillBroadcasts
             return plugin.Config.KillBroadcast;
         }
 
-        private Broadcast FormatBroadcast(Broadcast broadcast, DyingEventArgs ev)
+        private string FormatContent(string content, DyingEventArgs ev)
         {
-            string content = broadcast.Content.Replace("$DamageType", ev.Handler.Type.Translation())
+            content = content.Replace("$DamageType", ev.Handler.Type.Translation())
                 .Replace("$KilledName", ev.Target.Nickname)
-                .Replace("$KilledRoleColor", ev.Target.RoleColor.ToHex())
-                .Replace("$KilledRole", ev.Target.Role.Translation())
+                .Replace("$KilledRoleColor", ev.Target.Role.Color.ToHex())
+                .Replace("$KilledRole", ev.Target.Role.Type.Translation())
                 .Replace("$KilledUserId", ev.Target.UserId);
 
             if (ev.Killer != null)
             {
                 content = content.Replace("$KillersName", ev.Killer.Nickname)
-                    .Replace("$KillersRoleColor", ev.Killer.RoleColor.ToHex())
-                    .Replace("$KillersRole", ev.Killer.Role.Translation())
+                    .Replace("$KillersRoleColor", ev.Killer.Role.Color.ToHex())
+                    .Replace("$KillersRole", ev.Killer.Role.Type.Translation())
                     .Replace("$KillersUserId", ev.Killer.UserId);
             }
 
-            return new Broadcast(content, broadcast.Duration, broadcast.Show, broadcast.Type);
+            return content;
         }
     }
 }

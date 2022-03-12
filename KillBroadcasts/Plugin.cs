@@ -7,6 +7,7 @@
 
 namespace KillBroadcasts
 {
+    using System;
     using Exiled.API.Features;
 
     /// <summary>
@@ -20,6 +21,12 @@ namespace KillBroadcasts
         /// Gets the only existing instance of the <see cref="Plugin"/> class.
         /// </summary>
         public static Plugin Instance { get; private set; }
+
+        /// <inheritdoc />
+        public override string Author => "Build";
+
+        /// <inheritdoc />
+        public override Version RequiredExiledVersion { get; } = new Version(5, 0, 0);
 
         /// <inheritdoc />
         public override void OnEnabled()

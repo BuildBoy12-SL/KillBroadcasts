@@ -7,6 +7,7 @@
 
 namespace KillBroadcasts
 {
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs;
     using MEC;
@@ -24,8 +25,8 @@ namespace KillBroadcasts
         /// <param name="plugin">An instance of the plugin class.</param>
         public EventHandlers(Plugin plugin) => this.plugin = plugin;
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnDying(DyingEventArgs)"/>
-        public void OnDying(DyingEventArgs ev)
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnDied(DiedEventArgs)"/>
+        public void OnDied(DiedEventArgs ev)
         {
             Broadcast broadcast = GetRelatedBroadcast(ev);
             string content = FormatContent(broadcast.Content, ev);
@@ -37,7 +38,7 @@ namespace KillBroadcasts
             });
         }
 
-        private Broadcast GetRelatedBroadcast(DyingEventArgs ev)
+        private Broadcast GetRelatedBroadcast(DiedEventArgs ev)
         {
             if (ev.Killer == null)
                 return plugin.Config.SuicideBroadcast;
@@ -48,12 +49,12 @@ namespace KillBroadcasts
             return plugin.Config.KillBroadcast;
         }
 
-        private string FormatContent(string content, DyingEventArgs ev)
+        private string FormatContent(string content, DiedEventArgs ev)
         {
             content = content.Replace("$DamageType", ev.Handler.Type.Translation())
                 .Replace("$KilledName", ev.Target.Nickname)
-                .Replace("$KilledRoleColor", ev.Target.Role.Color.ToHex())
-                .Replace("$KilledRole", ev.Target.Role.Type.Translation())
+                .Replace("$KilledRoleColor", ev.TargetOldRole.GetColor().ToHex())
+                .Replace("$KilledRole", ev.TargetOldRole.Translation())
                 .Replace("$KilledUserId", ev.Target.UserId);
 
             if (ev.Killer != null)

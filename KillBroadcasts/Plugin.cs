@@ -33,14 +33,14 @@ namespace KillBroadcasts
         {
             Instance = this;
             eventHandlers = new EventHandlers(this);
-            Exiled.Events.Handlers.Player.Dying += eventHandlers.OnDying;
+            Exiled.Events.Handlers.Player.Died += eventHandlers.OnDied;
             base.OnEnabled();
         }
 
         /// <inheritdoc />
         public override void OnDisabled()
         {
-            Exiled.Events.Handlers.Player.Dying -= eventHandlers.OnDying;
+            Exiled.Events.Handlers.Player.Died -= eventHandlers.OnDied;
             eventHandlers = null;
             Instance = null;
             base.OnDisabled();
